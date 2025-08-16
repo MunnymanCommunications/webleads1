@@ -4,10 +4,9 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "./auth-provider"
-import { Building2, LayoutDashboard, Users, Eye, Calendar, Settings, LogOut, Menu, X, Sparkles } from "lucide-react"
+import { Building2, LayoutDashboard, Users, Eye, Calendar, Settings, Menu, X, Sparkles } from "lucide-react"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -15,9 +14,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { session, logout } = useAuth()
   const pathname = usePathname()
-  const router = useRouter()
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -28,11 +25,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     { name: "Enrichment", href: "/dashboard/enrichment", icon: Sparkles },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ]
-
-  const handleLogout = async () => {
-    await logout()
-    router.push("/")
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,19 +94,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </ul>
         </nav>
         <div className="border-t p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-blue-700">{session?.user.name?.charAt(0).toUpperCase()}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{session?.user.name}</p>
-              <p className="text-xs text-gray-500 truncate">{session?.client.name}</p>
-            </div>
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-900">LeadIntel CRM</p>
+            <p className="text-xs text-gray-500">Multi-Client Dashboard</p>
           </div>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="w-full justify-start bg-transparent">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
         </div>
       </div>
 
@@ -128,18 +111,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1" />
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" />
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-blue-700">
-                    {session?.user.name?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="hidden lg:block">
-                  <p className="text-sm font-medium text-gray-900">{session?.user.name}</p>
-                  <p className="text-xs text-gray-500">{session?.client.name}</p>
-                </div>
-              </div>
+              <div className="text-sm font-medium text-gray-900">Lead Intelligence CRM</div>
             </div>
           </div>
         </div>
