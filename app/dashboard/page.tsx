@@ -61,6 +61,22 @@ export default function DashboardPage() {
     .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
     .slice(0, 5)
 
+  const handleScheduleFollowup = () => {
+    window.location.href = "/dashboard/followups"
+  }
+
+  const handleAddContact = () => {
+    window.location.href = "/dashboard/contacts"
+  }
+
+  const handleAddCompany = () => {
+    window.location.href = "/dashboard/companies"
+  }
+
+  const handleViewTrackingCode = () => {
+    window.location.href = "/dashboard/settings"
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -230,19 +246,27 @@ export default function DashboardPage() {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start bg-transparent" variant="outline">
+                <Button
+                  className="w-full justify-start bg-transparent"
+                  variant="outline"
+                  onClick={handleScheduleFollowup}
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Schedule Follow-up
                 </Button>
-                <Button className="w-full justify-start bg-transparent" variant="outline">
+                <Button className="w-full justify-start bg-transparent" variant="outline" onClick={handleAddContact}>
                   <Users className="mr-2 h-4 w-4" />
                   Add Contact
                 </Button>
-                <Button className="w-full justify-start bg-transparent" variant="outline">
+                <Button className="w-full justify-start bg-transparent" variant="outline" onClick={handleAddCompany}>
                   <Building2 className="mr-2 h-4 w-4" />
                   Add Company
                 </Button>
-                <Button className="w-full justify-start bg-transparent" variant="outline">
+                <Button
+                  className="w-full justify-start bg-transparent"
+                  variant="outline"
+                  onClick={handleViewTrackingCode}
+                >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View Tracking Code
                 </Button>

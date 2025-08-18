@@ -4,13 +4,14 @@
     config: {
       clientId: null,
       apiKey: null,
-      endpoint: "/api/track",
+      endpoint: null, // Will be set during init
       debug: false,
     },
 
     init: function (clientId, apiKey, options = {}) {
       this.config.clientId = clientId
       this.config.apiKey = apiKey
+      this.config.endpoint = (options.endpoint || window.location.origin) + "/api/track"
       this.config.debug = options.debug || false
 
       if (!clientId || !apiKey) {
@@ -20,7 +21,7 @@
 
       try {
         this.setupTracking()
-        this.log("LeadIntel tracker initialized successfully")
+        this.log("LeadIntel tracker initialized successfully for endpoint: " + this.config.endpoint)
       } catch (error) {
         console.error("LeadIntel initialization error:", error)
       }
@@ -119,7 +120,6 @@
     },
 
     setupSPATracking: function () {
-      
       var currentPath = window.location.pathname
 
       // Override pushState and replaceState
@@ -154,7 +154,6 @@
     trackSessionDuration: function () {
       var sessionId = this.getSessionId()
       var startTime = Date.now()
-      
 
       var updateDuration = () => {
         var duration = Date.now() - startTime
@@ -170,7 +169,6 @@
     },
 
     trackEngagement: function () {
-      
       var engagementData = {
         scrollDepth: 0,
         timeOnPage: 0,
