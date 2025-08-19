@@ -3,6 +3,21 @@ import type { TrackingData } from "@/lib/visitor-tracking"
 import { crmApi } from "@/lib/crm-api"
 import { ipIntelligence } from "@/lib/visitor-tracking"
 
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  }
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders(),
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
     const trackingData: TrackingData = await request.json()
@@ -17,24 +32,46 @@ export async function POST(request: NextRequest) {
     // Validate API key
     const authHeader = request.headers.get("authorization")
     if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
+      return NextResponse.json(
+        { error: "Invalid API key" },
+        {
+          status: 401,
+          headers: corsHeaders(), // Added CORS headers to error response
+        },
+      )
     }
 
     const apiKey = authHeader.replace("Bearer ", "")
     const client = await crmApi.getClientByApiKey(apiKey)
     if (!client) {
-      return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
+      return NextResponse.json(
+        { error: "Invalid API key" },
+        {
+          status: 401,
+          headers: corsHeaders(), // Added CORS headers to error response
+        },
+      )
     }
 
     // Skip tracking for localhost/development IPs
     if (ipAddress === "127.0.0.1" || ipAddress === "::1" || ipAddress.startsWith("192.168.")) {
-      return NextResponse.json({ success: true, message: "Development IP skipped" })
+      return NextResponse.json(
+        { success: true, message: "Development IP skipped" },
+        {
+          headers: corsHeaders(), // Added CORS headers to response
+        },
+      )
     }
 
     // Skip residential IPs
     if (ipIntelligence.isResidentialIP(ipAddress)) {
       console.log(`[v0] Skipping residential IP: ${ipAddress}`)
-      return NextResponse.json({ success: true, message: "Residential IP skipped" })
+      return NextResponse.json(
+        { success: true, message: "Residential IP skipped" },
+        {
+          headers: corsHeaders(), // Added CORS headers to response
+        },
+      )
     }
 
     // Get location data
@@ -86,14 +123,25 @@ export async function POST(request: NextRequest) {
 
     console.log(`[v0] Created visit: ${visit.id}, Company identified: ${!!companyId}`)
 
-    return NextResponse.json({
-      success: true,
-      visitId: visit.id,
-      companyIdentified: !!companyId,
-      companyName: companyData?.name,
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        visitId: visit.id,
+        companyIdentified: !!companyId,
+        companyName: companyData?.name,
+      },
+      {
+        headers: corsHeaders(), // Added CORS headers to success response
+      },
+    )
   } catch (error) {
     console.error("[v0] Tracking error:", error)
-    return NextResponse.json({ error: "Tracking failed" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Tracking failed" },
+      {
+        status: 500,
+        headers: corsHeaders(), // Added CORS headers to error response
+      },
+    )
   }
 }
