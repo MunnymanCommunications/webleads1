@@ -1,10 +1,18 @@
 // Production CRM API functions - replace with real database operations
 import type { Client, Company, Contact, Visit, FollowUp } from "./types"
 
+const defaultClient: Client = {
+  id: "default-client",
+  name: "Default Client",
+  apiKey: "default-api-key-123",
+  webhookUrl: "",
+  createdAt: new Date(),
+}
+
 // In production, these would be database operations
 // For now, using in-memory storage that will be replaced
 const productionData = {
-  clients: [] as Client[],
+  clients: [defaultClient] as Client[], // Start with default client
   companies: [] as Company[],
   contacts: [] as Contact[],
   visits: [] as Visit[],
